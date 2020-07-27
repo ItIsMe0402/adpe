@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.github.itisme0402.content.ContentFragment
+import com.github.itisme0402.content.PostListFragment
 import com.github.itisme0402.content.UserListFragment
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -33,7 +34,8 @@ class MainActivity : AppCompatActivity() {
         viewModel.tabIndexLiveData.observe(this, Observer { tabIndex ->
             tabLayout.selectTab(tabLayout.getTabAt(tabIndex))
             val fragmentClass = when (tabIndex) {
-                0 -> UserListFragment::class.java
+                MainViewModel.TAB_USERS -> UserListFragment::class.java
+                MainViewModel.TAB_POSTS -> PostListFragment::class.java
                 else -> ContentFragment::class.java
             }
             supportFragmentManager.beginTransaction()
