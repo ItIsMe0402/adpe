@@ -12,7 +12,7 @@ import com.github.itisme0402.databinding.ItemUserBinding
 import com.github.itisme0402.entity.User
 import kotlinx.android.synthetic.main.fragment_content.*
 
-class UserListFragment : ContentFragment<User>() {
+class UserListFragment : ContentFragment<List<User>>() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -24,7 +24,7 @@ class UserListFragment : ContentFragment<User>() {
         viewModel.usersStateLiveData.bindToLayout()
     }
 
-    override fun updateListContent(content: List<User>) {
+    override fun updateContent(content: List<User>) {
         contentRecyclerView.adapter = Adapter(content)
     }
 
@@ -37,7 +37,7 @@ class UserListFragment : ContentFragment<User>() {
                 parent,
                 false
             )
-            return ViewHolder(binding, binding.root)
+            return ViewHolder(binding)
                 .apply {
                     itemView.setOnClickListener {
                         viewModel.onUserChosen(users[adapterPosition].id)
@@ -53,9 +53,8 @@ class UserListFragment : ContentFragment<User>() {
     }
 
     private class ViewHolder(
-        private val binding: ItemUserBinding,
-        itemView: View
-    ) : RecyclerView.ViewHolder(itemView) {
+        private val binding: ItemUserBinding
+    ) : RecyclerView.ViewHolder(binding.root) {
 
         fun updateUser(user: User) {
             binding.user = user

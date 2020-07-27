@@ -2,10 +2,7 @@ package com.github.itisme0402
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.github.itisme0402.content.PostsRepository
-import com.github.itisme0402.content.PostsRepositoryImpl
-import com.github.itisme0402.content.UsersRepository
-import com.github.itisme0402.content.UsersRepositoryImpl
+import com.github.itisme0402.content.*
 import com.github.itisme0402.network.NetworkApi
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -19,6 +16,7 @@ object InjectAllStuffViewModelFactory : ViewModelProvider.Factory {
     private val networkApi: NetworkApi
     private val usersRepository: UsersRepository
     private val postsRepository: PostsRepository
+    private val commentsRepository: CommentsRepository
     private val schedulerHolder = SchedulerHolder(
         Schedulers.io(),
         AndroidSchedulers.mainThread()
@@ -36,6 +34,7 @@ object InjectAllStuffViewModelFactory : ViewModelProvider.Factory {
         networkApi = retrofit.create(NetworkApi::class.java)
         usersRepository = UsersRepositoryImpl(networkApi)
         postsRepository = PostsRepositoryImpl(networkApi)
+        commentsRepository = CommentsRepositoryImpl(networkApi)
     }
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
@@ -45,6 +44,7 @@ object InjectAllStuffViewModelFactory : ViewModelProvider.Factory {
                 MainViewModel(
                     usersRepository,
                     postsRepository,
+                    commentsRepository,
                     schedulerHolder
                 ) as T
             }

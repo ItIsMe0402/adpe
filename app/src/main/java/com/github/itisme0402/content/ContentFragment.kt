@@ -14,7 +14,9 @@ import com.github.itisme0402.R
 import com.github.itisme0402.State
 import kotlinx.android.synthetic.main.fragment_content.*
 
-open class ContentFragment<T> : Fragment(R.layout.fragment_content) {
+abstract class ContentFragment<T> : Fragment(R.layout.fragment_content) {
+
+    protected open val shouldShowFooter = false
 
     protected val viewModel: MainViewModel by lazy(LazyThreadSafetyMode.NONE) {
         ViewModelProvider(activity!!, InjectAllStuffViewModelFactory)
@@ -28,23 +30,26 @@ open class ContentFragment<T> : Fragment(R.layout.fragment_content) {
         contentRecyclerView.addItemDecoration(dividerItemDecoration)
     }
 
-    protected fun LiveData<State<List<T>>>.bindToLayout() {
+    protected fun LiveData<State<T>>.bindToLayout() {
         observe(viewLifecycleOwner, Observer { state ->
             when (state) {
                 is State.Loaded -> {
+                    if (shouldShowFooter) {
+                        footer.visibility = View.VISIBLE
+                    }
                     contentLoadingIndicator.visibility = View.GONE
                     contentRecyclerView.visibility = View.VISIBLE
-                    updateListContent(state.content)
+                    updateContent(state.content)
                 }
                 State.Loading -> {
+                    footer.visibility = View.GONE
                     contentLoadingIndicator.visibility = View.VISIBLE
                     contentRecyclerView.visibility = View.GONE
-                    contentRecyclerView.adapter = null
                 }
                 is State.Error -> {
+                    footer.visibility = View.GONE
                     contentLoadingIndicator.visibility = View.GONE
                     contentRecyclerView.visibility = View.GONE
-                    contentRecyclerView.adapter = null
                     AlertDialog.Builder(activity!!)
                         .setMessage(getString(R.string.format_error_message, state.message))
                         .setPositiveButton(android.R.string.ok) { _, _ -> }
@@ -54,6 +59,5 @@ open class ContentFragment<T> : Fragment(R.layout.fragment_content) {
         })
     }
 
-    protected open fun updateListContent(content: List<T>) {
-    }
+    protected abstract fun updateContent(content: T)
 }

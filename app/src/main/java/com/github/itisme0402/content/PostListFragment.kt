@@ -11,7 +11,7 @@ import com.github.itisme0402.R
 import com.github.itisme0402.entity.Post
 import kotlinx.android.synthetic.main.fragment_content.*
 
-class PostListFragment : ContentFragment<Post>() {
+class PostListFragment : ContentFragment<List<Post>>() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -23,7 +23,7 @@ class PostListFragment : ContentFragment<Post>() {
         viewModel.postsStateLiveData.bindToLayout()
     }
 
-    override fun updateListContent(content: List<Post>) {
+    override fun updateContent(content: List<Post>) {
         contentRecyclerView.adapter = Adapter(content)
     }
 
@@ -34,6 +34,11 @@ class PostListFragment : ContentFragment<Post>() {
                 .inflate(R.layout.item_post, parent, false)
                 as TextView
             return ViewHolder(itemView)
+                .apply {
+                    itemView.setOnClickListener {
+                        viewModel.onPostChosen(posts[adapterPosition].id)
+                    }
+                }
         }
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {

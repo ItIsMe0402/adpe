@@ -5,6 +5,7 @@ import com.google.android.material.tabs.TabLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.github.itisme0402.content.CommentListFragment
 import com.github.itisme0402.content.ContentFragment
 import com.github.itisme0402.content.PostListFragment
 import com.github.itisme0402.content.UserListFragment
@@ -36,7 +37,8 @@ class MainActivity : AppCompatActivity() {
             val fragmentClass = when (tabIndex) {
                 MainViewModel.TAB_USERS -> UserListFragment::class.java
                 MainViewModel.TAB_POSTS -> PostListFragment::class.java
-                else -> ContentFragment::class.java
+                MainViewModel.TAB_COMMENTS -> CommentListFragment::class.java
+                else -> throw IllegalArgumentException("Unknown tab index: $tabIndex")
             }
             supportFragmentManager.beginTransaction()
                 .replace(
